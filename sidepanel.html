@@ -53,6 +53,14 @@
           <button id="cancelButton" class="danger hidden" type="button">取消任务</button>
         </div>
 
+        <section class="note-tools card" aria-label="笔记工具">
+          <button id="downloadSubtitleButton" type="button">下载字幕.md</button>
+          <button id="downloadSummaryButton" type="button" disabled>下载总结.md</button>
+          <button id="mindmapButton" type="button" disabled>下载思维导图.md</button>
+          <button id="expandAllButton" type="button" disabled>全部展开</button>
+          <button id="collapseAllButton" type="button" disabled>全部收起</button>
+        </section>
+
         <section id="resultView" class="results hidden">
           <section class="card result-hero">
             <span class="eyebrow">课程地图</span>
@@ -64,7 +72,7 @@
             <ol id="learningPath" class="learning-path"></ol>
           </section>
           <section class="modules-section">
-            <div class="section-heading"><div><span class="eyebrow">知识结构</span><h2>分P模块</h2></div></div>
+            <div class="section-heading"><div><span class="eyebrow">完整有序列表</span><h2>知识笔记</h2></div></div>
             <div id="modules"></div>
           </section>
           <section id="missingSection" class="card warning-card hidden">

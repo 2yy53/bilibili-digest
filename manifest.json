@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "B站课程地图",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "minimum_chrome_version": "116",
   "description": "从B站现有字幕生成分P摘要和课程学习地图。非哔哩哔哩官方产品。",
   "permissions": ["sidePanel", "storage", "tabs"],

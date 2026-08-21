@@ -91,6 +91,10 @@ async function fetchPartTranscript({ bvid, cid, refresh = false }) {
     if (record?.transcript) return { part, transcript: record.transcript, cached: true };
   }
   const transcript = await adapter.fetchPartTranscript(course, part);
+  const previous = await cache.getPart(course.bvid, part.cid);
+  await cache.setPart(course.bvid, part.cid, {
+    ...(previous || {}), transcript, fingerprint: BILI_DIGEST_CORE.transcriptFingerprint(transcript), updatedAt: Date.now(),
+  });
   return { part, transcript, cached: false };
 }
 
@@ -118,11 +122,14 @@ async function summarizeSelectedParts({ bvid, selectedCids, refresh = false }) {
     await notifyProgress({ bvid: course.bvid, status: "processing", index, total: parts.length, part });
     try {
       let record = refresh ? null : await cache.getPart(course.bvid, part.cid);
-      if (!record?.digest || !record?.transcript) {
+      if (!record?.transcript) {
         const transcript = await adapter.fetchPartTranscript(course, part);
-        const fingerprint = BILI_DIGEST_CORE.transcriptFingerprint(transcript);
-        const digest = await deepseek.summarizePart(course, part, transcript, token.controller.signal);
-        record = { transcript, digest, fingerprint, updatedAt: Date.now() };
+        record = { ...(record || {}), transcript, fingerprint: BILI_DIGEST_CORE.transcriptFingerprint(transcript), updatedAt: Date.now() };
+        await cache.setPart(course.bvid, part.cid, record);
+      }
+      if (!BILI_DIGEST_CORE.isCurrentPartDigest(record.digest)) {
+        const digest = await deepseek.summarizePart(course, part, record.transcript, token.controller.signal);
+        record = { ...record, digest, updatedAt: Date.now() };
         await cache.setPart(course.bvid, part.cid, record);
       }
       digests.push(record.digest);
@@ -144,6 +151,28 @@ async function summarizeSelectedParts({ bvid, selectedCids, refresh = false }) {
   await cache.setRun(course.bvid, run);
   if (activeRuns.get(course.bvid) === token) activeRuns.delete(course.bvid);
   return { course, selectedCids: run.selectedCids, digests, missingParts: run.missingParts, status: run.status };
+}
+
+async function getCachedCourseMap({ bvid, selectedCids = [], exactOnly = false }) {
+  const cached = await cache.getLatestMap(String(bvid || ""), selectedCids, exactOnly);
+  return cached || { courseMap: null, signature: null, exact: false };
+}
+
+async function prepareSubtitleExport({ bvid, selectedCids }) {
+  const course = await loadCourse(bvid);
+  const parts = selectedParts(course, selectedCids);
+  const entries = [];
+  const missingParts = [];
+  for (const part of parts) {
+    try {
+      const result = await fetchPartTranscript({ bvid: course.bvid, cid: part.cid });
+      entries.push({ part, transcript: result.transcript });
+    } catch (error) {
+      missingParts.push({ cid: String(part.cid), page: part.page, title: part.title, ...serializeError(error) });
+    }
+  }
+  if (!entries.length) throw new BILI_DIGEST_BILIBILI.DigestError("NO_TEXT", "所选分P没有可导出的字幕。");
+  return { course, entries, missingParts };
 }
 
 async function buildCourseMap({ bvid, selectedCids, refresh = false }) {
@@ -195,6 +224,8 @@ async function handleMessage(message) {
     case "fetchPartTranscript": return fetchPartTranscript(message);
     case "summarizeSelectedParts": return summarizeSelectedParts(message);
     case "buildCourseMap": return buildCourseMap(message);
+    case "getCachedCourseMap": return getCachedCourseMap(message);
+    case "prepareSubtitleExport": return prepareSubtitleExport(message);
     case "cancelCourseRun": return cancelCourseRun(message);
     case "getCourseRunState": return { run: await cache.getRun(String(message.bvid || "")) };
     case "clearVideoCache": return { count: await cache.removeVideo(String(message.bvid || "")) };
