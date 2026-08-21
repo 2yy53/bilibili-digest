@@ -27,7 +27,7 @@
 2. 开启“开发者模式”。
 3. 点击“加载已解压的扩展程序”。
 4. 选择这个 `bilibili-digest` 文件夹，其中应直接包含 `manifest.json`。
-5. 在扩展设置中填写自己的 [DeepSeek API Key](https://platform.deepseek.com/api_keys)。
+5. 在扩展设置中填写自己的 [DeepSeek API Key](https://platform.deepseek.com/usage)，详情点击后查看官网连接。
 6. 在同一个 Chrome 个人资料中登录B站，然后打开普通视频页，点击扩展图标。
 
 ## 数据流
