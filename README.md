@@ -1,4 +1,4 @@
-# B站课程地图
+# B站课程结构性总结
 
 一个独立的 Chrome Manifest V3 扩展：读取普通B站投稿视频已有的人工字幕或 AI 字幕，使用用户自己的 DeepSeek V4 Flash API Key，生成分P摘要和整体课程学习地图。
 
