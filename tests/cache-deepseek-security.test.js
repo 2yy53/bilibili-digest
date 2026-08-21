@@ -33,11 +33,28 @@ test("缓存按bvid+cid隔离并让选择集合或内容变化使聚合键失效
   assert.equal(await cache.removeVideo("BV1AB411C7XQ"), 1);
 });
 
+test("总结笔记不自动过期并可优先查找所选分P的最新本地版本", async () => {
+  let current = 1000;
+  const storage = memoryStorage();
+  const cache = cacheModule.createCache(storage, core, () => current);
+  await cache.setMap("BV1AB411C7XQ", "first", { selectedCids: ["1"], overview: "P1" });
+  current = 2000;
+  await cache.setMap("BV1AB411C7XQ", "second", { selectedCids: ["2"], overview: "P2" });
+  assert.equal(storage.values[cacheModule.mapKey("BV1AB411C7XQ", "first")].expiresAt, undefined);
+  assert.equal((await cache.getLatestMap("BV1AB411C7XQ", ["1"], true)).courseMap.overview, "P1");
+  assert.equal((await cache.getLatestMap("BV1AB411C7XQ", ["3"], false)).courseMap.overview, "P2");
+});
+
 test("DeepSeek非法JSON重试一次并校验分P结构", async () => {
   let calls = 0;
   const fetchImpl = async () => {
     calls += 1;
-    const content = calls === 1 ? "not json" : JSON.stringify({ oneSentence: "本节介绍基础", topics: ["基础"], prerequisites: [], outcomes: ["理解基础"], keyMoments: [{ seconds: 3, title: "开始" }] });
+    const content = calls === 1 ? "not json" : JSON.stringify({
+      oneSentence: "本节介绍基础", prerequisites: [], outcomes: ["理解基础"],
+      sections: [{ title: "基础", takeaway: "先理解定义", subtopics: [{ title: "概念", takeaway: "定义决定用法", knowledgePoints: [{
+        title: "基础定义", what: "基础是什么", why: "用于理解后续", when: "学习后续前", how: ["阅读定义", "完成例子"], keyMoments: [{ seconds: 3, title: "开始" }],
+      }] }] }],
+    });
     return new Response(JSON.stringify({ choices: [{ message: { content } }] }), { status: 200 });
   };
   const client = deepseekModule.createClient({
@@ -52,6 +69,7 @@ test("DeepSeek非法JSON重试一次并校验分P结构", async () => {
   );
   assert.equal(calls, 2);
   assert.equal(digest.source, "ai_subtitle");
+  assert.equal(digest.schemaVersion, 2);
   assert.equal(digest.keyMoments[0].seconds, 3);
 });
 

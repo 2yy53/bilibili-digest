@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>侧栏运行验收</title>
+  <link rel="stylesheet" href="../../sidepanel.css">
+</head>
+<body>
+  <header class="topbar"><div class="brand"><span class="brand-mark">课</span><div><strong>B站课程地图</strong><small>字幕驱动的学习结构</small></div></div><button id="settingsButton" class="icon-button" type="button">⚙</button></header>
+  <main>
+    <section id="notice" class="notice hidden" role="status"></section>
+    <section id="emptyState" class="empty card"><h1>打开一个B站视频</h1></section>
+    <div id="courseView" class="hidden">
+      <section class="course-card card"><h1 id="courseTitle"></h1><p id="courseOwner"></p><p id="courseDescription"></p></section>
+      <section class="parts-card card"><div class="section-heading"><h2>选择分P</h2><span id="selectionCount"></span></div><button id="selectAll">全选</button><button id="selectNone">取消全选</button><div id="partsList" class="parts-list"></div></section>
+      <section id="progressCard" class="progress-card card hidden"><strong id="progressTitle"></strong><span id="progressText"></span><div class="progress-track"><span id="progressBar"></span></div><div id="partStatuses"></div></section>
+      <div class="primary-actions"><button id="generateButton" class="primary">生成课程地图</button><button id="cancelButton" class="danger hidden">取消任务</button></div>
+      <section class="note-tools card" aria-label="笔记工具"><button id="downloadSubtitleButton">下载字幕.md</button><button id="downloadSummaryButton" disabled>下载总结.md</button><button id="mindmapButton" disabled>下载思维导图.md</button><button id="expandAllButton" disabled>全部展开</button><button id="collapseAllButton" disabled>全部收起</button></section>
+      <section id="resultView" class="results hidden">
+        <section class="card result-hero"><h2>整体概述</h2><p id="overview"></p></section>
+        <section id="learningSection" class="card"><ol id="learningPath"></ol></section>
+        <section class="modules-section"><div id="modules"></div></section>
+        <section id="missingSection" class="card hidden"><ul id="missingParts"></ul></section>
+      </section>
+    </div>
+  </main>
+  <script>
+    window.__fixtureDownloads = [];
+    const fixtureCreateElement = document.createElement.bind(document);
+    document.createElement = function(name, options) {
+      const node = fixtureCreateElement(name, options);
+      if (String(name).toLowerCase() === "a") node.addEventListener("click", () => {
+        window.__fixtureDownloads.push({ download: node.download, isBlob: node.href.startsWith("blob:") });
+        document.documentElement.dataset.fixtureDownloads = JSON.stringify(window.__fixtureDownloads);
+      });
+      return node;
+    };
+    const fixtureCourse = { bvid: "BV1Ab411C7xQ", title: "运行夹具课程", owner: "测试老师", description: "用于验证实际侧栏脚本", pages: [{ cid: "101", page: 1, title: "第一课", duration: 300 }] };
+    const fixturePoint = { id: "101:kp:1", cid: "101", page: 1, partTitle: "第一课", source: "human_subtitle", confidence: "high", title: "定位的用途", what: "确定元素位置", why: "避免布局相互挤压", when: "需要叠放时", how: ["父元素相对定位", "子元素绝对定位"], keyMoments: [{ seconds: 100, title: "查看演示" }] };
+    const fixtureMap = { schemaVersion: 2, bvid: fixtureCourse.bvid, selectedCids: ["101"], overview: "本地恢复成功", learningPath: ["先理解结构"], sections: [{ title: "页面结构", takeaway: "先拆模块", subtopics: [{ title: "顶部区域", takeaway: "分层实现", knowledgePoints: [fixturePoint] }] }], missingParts: [] };
+    window.chrome = {
+      tabs: { query: async () => [{ id: 1, url: `https://www.bilibili.com/video/${fixtureCourse.bvid}?p=1` }], sendMessage: async () => ({ success: true }), update: async () => ({}) },
+      runtime: {
+        onMessage: { addListener() {} }, openOptionsPage() {},
+        sendMessage: async (message) => {
+          if (message.action === "loadCourse") return { success: true, course: fixtureCourse };
+          if (message.action === "getCourseRunState") return { success: true, run: { status: "complete", selectedCids: ["101"] } };
+          if (message.action === "getCachedCourseMap") return { success: true, courseMap: fixtureMap, signature: "fixture-v2", exact: true };
+          if (message.action === "prepareSubtitleExport") return { success: true, course: fixtureCourse, entries: [{ part: fixtureCourse.pages[0], transcript: { source: "human_subtitle", confidence: "high", segments: [{ start: 100, text: "定位示例" }] } }], missingParts: [] };
+          return { success: true, hasAiKey: true };
+        },
+      },
+    };
+  </script>
+  <script src="../../lib/core.js"></script>
+  <script src="../../sidepanel.js"></script>
+</body>
+</html>

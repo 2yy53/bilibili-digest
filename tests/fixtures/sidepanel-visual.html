@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>笔记侧栏视觉验收</title>
+  <link rel="stylesheet" href="../../sidepanel.css">
+</head>
+<body>
+  <header class="topbar"><div class="brand"><span class="brand-mark">课</span><div><strong>B站课程地图</strong><small>本地笔记已恢复</small></div></div></header>
+  <main>
+    <section class="card result-hero"><span class="eyebrow">课程地图</span><h1>HTML + CSS 小米商城首页</h1><p>先拆分页面结构，再分别实现布局、定位与响应式。</p></section>
+    <section class="note-tools card" aria-label="笔记工具">
+      <button type="button">下载字幕.md</button><button type="button">下载总结.md</button><button type="button">下载思维导图.md</button><button type="button">全部展开</button><button type="button">全部收起</button>
+    </section>
+    <section class="modules-section">
+      <div class="section-heading"><div><span class="eyebrow">完整有序列表</span><h2>知识笔记</h2></div></div>
+      <details class="note-section" open>
+        <summary class="note-summary"><span class="note-summary-text"><span class="note-summary-title">一、页面结构</span><span class="note-summary-takeaway">先拆模块，再按视觉顺序实现。</span></span></summary>
+        <div class="subtopic-list">
+          <details class="note-subtopic" open>
+            <summary class="note-summary"><span class="note-summary-text"><span class="note-summary-title">1. 顶部区域</span><span class="note-summary-takeaway">广告与导航是两个独立层。</span></span></summary>
+            <div class="knowledge-list"><article class="knowledge-point">
+              <h4>1.1 顶部广告的绝对定位</h4>
+              <p class="knowledge-field"><strong>是什么：</strong>元素脱离普通文档流，并相对定位祖先确定位置。</p>
+              <p class="knowledge-field"><strong>为什么要有：</strong>让广告图精确覆盖在固定区域，而不挤动其他内容。</p>
+              <p class="knowledge-field"><strong>什么时候用：</strong>需要叠放或精确锚定，且父容器尺寸稳定时。</p>
+              <div class="knowledge-field"><strong>怎么用：</strong><ol class="knowledge-steps"><li>父容器设置 relative。</li><li>子元素设置 absolute 和位置值。</li></ol></div>
+              <div class="knowledge-meta"><span class="source-badge">P1 · 人工字幕</span><button class="moment"><span class="moment-time">1:40</span><span>查看演示</span></button></div>
+            </article></div>
+          </details>
+        </div>
+      </details>
+      <details class="note-section"><summary class="note-summary"><span class="note-summary-text"><span class="note-summary-title">二、CSS 布局</span><span class="note-summary-takeaway">定位与弹性布局解决不同的问题。</span></span></summary></details>
+    </section>
+  </main>
+</body>
+</html>
