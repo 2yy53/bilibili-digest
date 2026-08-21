@@ -1,0 +1,12 @@
+{
+  "name": "bilibili-course-map-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome extension that turns existing Bilibili subtitles into a multi-part course map.",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test --test-isolation=none tests/*.test.js",
+    "check": "node scripts/check.mjs",
+    "package": "node scripts/package.mjs"
+  }
+}

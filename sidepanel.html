@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>B站课程地图</title>
+    <link rel="stylesheet" href="sidepanel.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">课</span><div><strong>B站课程地图</strong><small>字幕驱动的学习结构</small></div></div>
+      <button id="settingsButton" class="icon-button" type="button" aria-label="打开设置">⚙</button>
+    </header>
+
+    <main>
+      <section id="notice" class="notice hidden" role="status"></section>
+
+      <section id="emptyState" class="empty card">
+        <div class="empty-icon">BV</div>
+        <h1>打开一个B站视频</h1>
+        <p>支持普通投稿视频和多P课程。选择分P后才会读取字幕和调用 DeepSeek。</p>
+      </section>
+
+      <div id="courseView" class="hidden">
+        <section class="course-card card">
+          <span class="eyebrow">当前课程</span>
+          <h1 id="courseTitle"></h1>
+          <p id="courseOwner" class="muted"></p>
+          <p id="courseDescription" class="description"></p>
+        </section>
+
+        <section class="parts-card card">
+          <div class="section-heading">
+            <div><span class="eyebrow">处理范围</span><h2>选择分P</h2></div>
+            <span id="selectionCount" class="count-pill">0 / 0</span>
+          </div>
+          <div class="selection-actions">
+            <button id="selectAll" type="button">全选</button>
+            <button id="selectNone" type="button">取消全选</button>
+          </div>
+          <div id="partsList" class="parts-list"></div>
+          <p class="privacy-hint">不会下载视频或音频；字幕仅在你点击生成后读取。</p>
+        </section>
+
+        <section id="progressCard" class="progress-card card hidden">
+          <div class="progress-meta"><strong id="progressTitle">正在准备…</strong><span id="progressText">0 / 0</span></div>
+          <div class="progress-track"><span id="progressBar"></span></div>
+          <div id="partStatuses" class="part-statuses"></div>
+        </section>
+
+        <div class="primary-actions">
+          <button id="generateButton" class="primary" type="button">生成课程地图</button>
+          <button id="cancelButton" class="danger hidden" type="button">取消任务</button>
+        </div>
+
+        <section id="resultView" class="results hidden">
+          <section class="card result-hero">
+            <span class="eyebrow">课程地图</span>
+            <h2>整体概述</h2>
+            <p id="overview"></p>
+          </section>
+          <section id="learningSection" class="card">
+            <span class="eyebrow">推荐顺序</span><h2>学习路径</h2>
+            <ol id="learningPath" class="learning-path"></ol>
+          </section>
+          <section class="modules-section">
+            <div class="section-heading"><div><span class="eyebrow">知识结构</span><h2>分P模块</h2></div></div>
+            <div id="modules"></div>
+          </section>
+          <section id="missingSection" class="card warning-card hidden">
+            <span class="eyebrow">未参与总结</span><h2>缺少文本的分P</h2>
+            <ul id="missingParts"></ul>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <footer>非哔哩哔哩官方产品 · 不读取或保存 Cookie</footer>
+    <script src="lib/core.js"></script>
+    <script src="sidepanel.js"></script>
+  </body>
+</html>

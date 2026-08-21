@@ -1,0 +1,18 @@
+# Secrets — never commit real keys
+config.js
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies and build output
+node_modules/
+dist/
+
+# Local tooling / browser data
+.tmp-*/
+.playwright-mcp/
+
+# OS / editor files
+.DS_Store

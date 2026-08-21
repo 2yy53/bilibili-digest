@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>B站课程地图设置</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <main class="settings-shell">
+      <header><span class="logo">课</span><div><h1>B站课程地图设置</h1><p>使用你自己的 DeepSeek API Key</p></div></header>
+      <section class="card">
+        <div class="row"><div><span class="label">B站登录状态</span><p>扩展只让浏览器自动携带当前网页登录态，不读取或保存 Cookie。</p></div><span id="loginStatus" class="badge">检查中…</span></div>
+      </section>
+      <section class="card">
+        <label for="apiKey">DeepSeek API Key</label>
+        <input id="apiKey" type="password" autocomplete="off" placeholder="在此粘贴 API Key">
+        <p>密钥只保存在当前 Chrome 个人资料中，并仅发送至 <code>api.deepseek.com</code>。模型固定为 DeepSeek V4 Flash。</p>
+        <button id="saveButton" class="primary" type="button">保存设置</button>
+        <div id="saveStatus" class="status" role="status"></div>
+      </section>
+      <section class="card danger-zone">
+        <h2>本地数据</h2>
+        <p>课程信息、规范化字幕、分P摘要和课程地图默认缓存30天。</p>
+        <div class="button-row">
+          <button id="clearCurrent" type="button">清除当前视频缓存</button>
+          <button id="clearAll" class="danger" type="button">清除全部课程缓存</button>
+        </div>
+        <div id="dataStatus" class="status" role="status"></div>
+      </section>
+      <p class="footnote">本扩展与哔哩哔哩无官方隶属或合作关系。使用前请确认你有权处理相关内容。</p>
+    </main>
+    <script src="settings.js"></script>
+    <script src="lib/core.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
