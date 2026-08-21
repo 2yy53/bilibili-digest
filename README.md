@@ -29,6 +29,7 @@
 4. 选择这个 `bilibili-digest` 文件夹，其中应直接包含 `manifest.json`。
 5. 在同一个 Chrome 个人资料中登录B站，然后打开普通视频页，点击扩展图标。
 6. 在扩展设置中填写自己的 [DeepSeek API Key](https://platform.deepseek.com/usage)，详情点击后查看官网连接。
+7. 设置好后再次来到视频处，点击扩展链接，即可使用。
 
 ## 数据流
 
